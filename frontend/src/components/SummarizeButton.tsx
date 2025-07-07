@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { wordApi } from '../office/wordApi';
-import { apiService } from '../services/apiService';
 
 const SummarizeButton: React.FC = () => {
   const [loading, setLoading] = useState(false);
@@ -18,8 +17,11 @@ const SummarizeButton: React.FC = () => {
         return;
       }
 
-      const response = await apiService.summarize({ text: selectedText });
-      setResult(response.summary);
+      // Mock API call for now - replace with actual API call later
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API delay
+      const mockSummary = `Key points:\n• abc\n• xyz\n• 123`;
+      
+      setResult(mockSummary);
       
     } catch (error) {
       setResult('Error: Failed to summarize text. Please try again.');
@@ -29,48 +31,50 @@ const SummarizeButton: React.FC = () => {
     }
   };
 
-  const handleInsertSummary = async () => {
-    if (!result) return;
-    
-    try {
-      await wordApi.insertTextAtSelection(`\n\nSummary: ${result}`);
-      setResult('');
-    } catch (error) {
-      console.error('Failed to insert summary:', error);
-    }
-  };
-
   return (
-    <div className="summarize-panel">
-      <div className="panel-header">
+    <div className="summarize-panel" style={{ padding: '20px' }}>
+      <div className="panel-header" style={{ marginBottom: '20px' }}>
         <h3>Summarize Text</h3>
-        <p>Select text in your document and click summarize to get an AI-generated summary.</p>
+        <p>Select text in your document and get a summary by Oliver.</p>
       </div>
       
       <button 
         onClick={handleSummarize}
         disabled={loading}
         className="action-button primary"
+        style={{ marginBottom: '16px' }}
       >
         {loading ? 'Summarizing...' : 'Summarize Selected Text'}
       </button>
       
       {result && (
-        <div className="result-container">
-          <h4>Summary:</h4>
-          <div className="result-text">{result}</div>
+        <div className="result-container" style={{ 
+          marginTop: '20px',
+          padding: '16px',
+          backgroundColor: '#f8f9fa',
+          borderRadius: '8px',
+          border: '1px solid #e9ecef'
+        }}>
+          <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', fontWeight: '600' }}>Summary:</h4>
+          <div className="result-text" style={{ 
+            marginBottom: '16px',
+            fontSize: '14px',
+            lineHeight: '1.4',
+            whiteSpace: 'pre-wrap'
+          }}>{result}</div>
           <div className="result-actions">
-            <button 
+            {/* <button 
               onClick={handleInsertSummary}
               className="action-button secondary"
+              style={{ marginRight: '8px' }}
             >
               Insert into Document
-            </button>
+            </button> */}
             <button 
               onClick={() => setResult('')}
               className="action-button tertiary"
             >
-              Clear
+              Reset
             </button>
           </div>
         </div>

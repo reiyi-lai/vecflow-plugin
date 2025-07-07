@@ -1,6 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { wordApi } from '../office/wordApi';
-import { apiService, ChatMessage } from '../services/apiService';
+
+interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}
 
 const AssistantChat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -8,15 +13,6 @@ const AssistantChat: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [includeSelection, setIncludeSelection] = useState(true);
   const [includeDocument, setIncludeDocument] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   const handleSendMessage = async () => {
     if (!currentPrompt.trim()) return;
@@ -32,7 +28,6 @@ const AssistantChat: React.FC = () => {
     setLoading(true);
 
     try {
-      let context = '';
       let selectedText = '';
 
       if (includeSelection) {
@@ -45,21 +40,20 @@ const AssistantChat: React.FC = () => {
 
       if (includeDocument) {
         try {
-          context = await wordApi.getEntireDocumentText();
+          await wordApi.getEntireDocumentText();
         } catch (error) {
           console.warn('Could not get document text:', error);
         }
       }
 
-      const response = await apiService.analyze({
-        text: selectedText,
-        prompt: currentPrompt,
-        context: context || undefined
-      });
+      // Mock API call - replace with actual API call later
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      let  mockResponse = `Lorem ipsum dolor sit amet.`;
 
       const assistantMessage: ChatMessage = {
         role: 'assistant',
-        content: response.response,
+        content: mockResponse,
         timestamp: new Date()
       };
 
@@ -78,20 +72,22 @@ const AssistantChat: React.FC = () => {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
   };
 
-  const handleInsertResponse = async (content: string) => {
-    try {
-      await wordApi.insertTextAtSelection(`\n\n${content}`);
-    } catch (error) {
-      console.error('Failed to insert response:', error);
-    }
-  };
+  // const handleInsertResponse = async (content: string) => {
+  //   try {
+  //     await wordApi.insertTextAtSelection(`\n\n${content}`);
+  //     alert('Response inserted successfully!');
+  //   } catch (error) {
+  //     console.error('Failed to insert response:', error);
+  //     alert('Failed to insert response');
+  //   }
+  // };
 
   const handleClearChat = () => {
     setMessages([]);
@@ -102,51 +98,99 @@ const AssistantChat: React.FC = () => {
   };
 
   return (
-    <div className="assistant-chat">
-      <div className="panel-header">
+    <div className="assistant-chat" style={{ padding: '20px' }}>
+      <div className="panel-header" style={{ marginBottom: '20px' }}>
         <h3>AI Assistant</h3>
-        <p>Chat with Oliver about your document. Ask questions, request analysis, or get help with legal tasks.</p>
+        <p>Chat with Oliver about your document.</p>
       </div>
 
-      <div className="chat-options">
-        <label className="option-label">
-          <input
-            type="checkbox"
-            checked={includeSelection}
-            onChange={(e) => setIncludeSelection(e.target.checked)}
-          />
-          Include selected text
-        </label>
-        <label className="option-label">
+      <div className="chat-options" style={{ 
+        marginBottom: '16px',
+        padding: '12px',
+        backgroundColor: '#f8f9fa',
+        borderRadius: '6px',
+        border: '1px solid #e9ecef'
+      }}>
+        <label className="option-label" style={{ 
+          display: 'flex',
+          alignItems: 'center',
+          fontSize: '14px',
+          cursor: 'pointer'
+        }}>
           <input
             type="checkbox"
             checked={includeDocument}
             onChange={(e) => setIncludeDocument(e.target.checked)}
+            style={{ marginRight: '8px' }}
           />
           Include entire document
         </label>
       </div>
 
-      <div className="chat-messages">
+      <div className="chat-messages" style={{ 
+        maxHeight: '200px',
+        overflowY: 'auto',
+        border: '1px solid #e9ecef',
+        borderRadius: '8px',
+        padding: '16px',
+        marginBottom: '16px',
+        backgroundColor: 'white'
+      }}>
         {messages.length === 0 ? (
-          <div className="empty-state">
-            <p>Start a conversation with Oliver!</p>
-            <div className="suggested-prompts">
+          <div className="empty-state" style={{ textAlign: 'center', padding: '40px 20px', color: '#6c757d' }}>
+            {/* <p>Start a conversation with Oliver!</p> */}
+            <div className="suggested-prompts" style={{ marginTop: '20px' }}>
               <button 
                 onClick={() => setCurrentPrompt('Analyze the selected text for potential legal issues')}
                 className="prompt-suggestion"
+                style={{ 
+                  display: 'block',
+                  width: '100%',
+                  marginBottom: '8px',
+                  padding: '12px',
+                  backgroundColor: '#f8f9fa',
+                  border: '1px solid #e9ecef',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  color: '#495057',
+                  cursor: 'pointer'
+                }}
               >
                 Analyze for legal issues
               </button>
               <button 
                 onClick={() => setCurrentPrompt('Summarize the key points of this document')}
                 className="prompt-suggestion"
+                style={{ 
+                  display: 'block',
+                  width: '100%',
+                  marginBottom: '8px',
+                  padding: '12px',
+                  backgroundColor: '#f8f9fa',
+                  border: '1px solid #e9ecef',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  color: '#495057',
+                  cursor: 'pointer'
+                }}
               >
                 Summarize key points
               </button>
               <button 
                 onClick={() => setCurrentPrompt('What are the main obligations in this contract?')}
                 className="prompt-suggestion"
+                style={{ 
+                  display: 'block',
+                  width: '100%',
+                  marginBottom: '8px',
+                  padding: '12px',
+                  backgroundColor: '#f8f9fa',
+                  border: '1px solid #e9ecef',
+                  borderRadius: '6px',
+                  fontSize: '13px',
+                  color: '#495057',
+                  cursor: 'pointer'
+                }}
               >
                 Find main obligations
               </button>
@@ -154,63 +198,133 @@ const AssistantChat: React.FC = () => {
           </div>
         ) : (
           messages.map((message, index) => (
-            <div key={index} className={`message ${message.role}`}>
-              <div className="message-header">
-                <span className="message-role">
+            <div key={index} className={`message ${message.role}`} style={{ 
+              marginBottom: '16px',
+              padding: '12px',
+              borderRadius: '8px',
+              backgroundColor: message.role === 'user' ? '#e3f2fd' : '#f3e5f5',
+              marginLeft: message.role === 'user' ? '5%' : '0',
+              marginRight: message.role === 'assistant' ? '5%' : '0'
+            }}>
+              <div className="message-header" style={{ 
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '8px'
+              }}>
+                <span className="message-role" style={{ fontWeight: '600', fontSize: '12px', color: '#495057' }}>
                   {message.role === 'user' ? 'You' : 'Oliver'}
                 </span>
-                <span className="message-time">
+                <span className="message-time" style={{ fontSize: '11px', color: '#6c757d' }}>
                   {formatTime(message.timestamp)}
                 </span>
               </div>
-              <div className="message-content">
+              <div className="message-content" style={{ 
+                fontSize: '14px',
+                lineHeight: '1.4',
+                color: '#212529',
+                whiteSpace: 'pre-wrap'
+              }}>
                 {message.content}
               </div>
-              {message.role === 'assistant' && (
-                <div className="message-actions">
+              {/* {message.role === 'assistant' && (
+                <div className="message-actions" style={{ marginTop: '8px' }}>
                   <button 
                     onClick={() => handleInsertResponse(message.content)}
                     className="action-button small"
+                    style={{ padding: '6px 12px', fontSize: '12px' }}
                   >
                     Insert into Document
                   </button>
                 </div>
-              )}
+              )} */}
             </div>
           ))
         )}
         {loading && (
-          <div className="message assistant">
-            <div className="message-header">
-              <span className="message-role">Oliver</span>
+          <div className="message assistant" style={{ 
+            marginBottom: '16px',
+            padding: '12px',
+            borderRadius: '8px',
+            backgroundColor: '#f3e5f5',
+            marginRight: '5%'
+          }}>
+            <div className="message-header" style={{ 
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              marginBottom: '8px'
+            }}>
+              <span className="message-role" style={{ fontWeight: '600', fontSize: '12px', color: '#495057' }}>Oliver</span>
             </div>
             <div className="message-content">
-              <div className="typing-indicator">
-                <span></span>
-                <span></span>
-                <span></span>
+              <div className="typing-indicator" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ 
+                  height: '8px',
+                  width: '8px',
+                  backgroundColor: '#6c757d',
+                  borderRadius: '50%',
+                  display: 'inline-block',
+                  animation: 'typing 1.4s infinite ease-in-out',
+                  animationDelay: '-0.32s'
+                }}></span>
+                <span style={{ 
+                  height: '8px',
+                  width: '8px',
+                  backgroundColor: '#6c757d',
+                  borderRadius: '50%',
+                  display: 'inline-block',
+                  animation: 'typing 1.4s infinite ease-in-out',
+                  animationDelay: '-0.16s'
+                }}></span>
+                <span style={{ 
+                  height: '8px',
+                  width: '8px',
+                  backgroundColor: '#6c757d',
+                  borderRadius: '50%',
+                  display: 'inline-block',
+                  animation: 'typing 1.4s infinite ease-in-out'
+                }}></span>
               </div>
             </div>
           </div>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
-      <div className="chat-input">
+      <div className="chat-input" style={{ borderTop: '1px solid #e9ecef', paddingTop: '16px' }}>
         <textarea
           value={currentPrompt}
           onChange={(e) => setCurrentPrompt(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           placeholder="Ask Oliver about your document..."
           className="prompt-input"
           rows={3}
           disabled={loading}
+          style={{ 
+            width: '100%',
+            padding: '12px',
+            border: '1px solid #ced4da',
+            borderRadius: '6px',
+            fontSize: '14px',
+            fontFamily: 'inherit',
+            resize: 'vertical',
+            minHeight: '60px',
+            marginBottom: '12px',
+            backgroundColor: 'white',
+            color: 'black',
+            boxSizing: 'border-box'
+          }}
         />
-        <div className="input-actions">
+        <div className="input-actions" style={{ 
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
           <button 
             onClick={handleClearChat}
             className="action-button tertiary small"
             disabled={loading || messages.length === 0}
+            style={{ padding: '6px 12px', fontSize: '12px' }}
           >
             Clear Chat
           </button>
