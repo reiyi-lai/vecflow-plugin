@@ -1,0 +1,112 @@
+export interface WordApiService {
+  initialize(): Promise<void>;
+  getSelectedText(): Promise<string>;
+  getEntireDocumentText(): Promise<string>;
+  insertText(text: string, location?: Word.InsertLocation): Promise<void>;
+  replaceSelectedText(text: string): Promise<void>;
+  insertTextAtSelection(text: string): Promise<void>;
+  isInitialized(): boolean;
+}
+
+class WordApiImpl implements WordApiService {
+  private initialized = false;
+
+  async initialize(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (typeof Office === 'undefined') {
+        reject(new Error('Office.js not loaded'));
+        return;
+      }
+
+      Office.onReady((info) => {
+        if (info.host === Office.HostType.Word) {
+          this.initialized = true;
+          resolve();
+        } else {
+          reject(new Error('Not running in Word'));
+        }
+      });
+    });
+  }
+
+  isInitialized(): boolean {
+    return this.initialized;
+  }
+
+  async getSelectedText(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      Word.run(async (context) => {
+        try {
+          const selection = context.document.getSelection();
+          selection.load('text');
+          await context.sync();
+          resolve(selection.text);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  }
+
+  async getEntireDocumentText(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      Word.run(async (context) => {
+        try {
+          const body = context.document.body;
+          body.load('text');
+          await context.sync();
+          resolve(body.text);
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  }
+
+  async insertText(text: string, location: Word.InsertLocation = Word.InsertLocation.end): Promise<void> {
+    return new Promise((resolve, reject) => {
+      Word.run(async (context) => {
+        try {
+          const body = context.document.body;
+          body.insertText(text, location);
+          await context.sync();
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  }
+
+  async replaceSelectedText(text: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      Word.run(async (context) => {
+        try {
+          const selection = context.document.getSelection();
+          selection.insertText(text, Word.InsertLocation.replace);
+          await context.sync();
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  }
+
+  async insertTextAtSelection(text: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      Word.run(async (context) => {
+        try {
+          const selection = context.document.getSelection();
+          selection.insertText(text, Word.InsertLocation.after);
+          await context.sync();
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
+    });
+  }
+}
+
+export const wordApi: WordApiService = new WordApiImpl();
