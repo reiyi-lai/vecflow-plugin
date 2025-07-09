@@ -35,7 +35,7 @@ const Sidebar: React.FC = () => {
       <div className="sidebar-container">
         <div className="sidebar-header">
           <h2>Oliver AI Assistant</h2>
-          {/* <p>Initializing...</p> */}
+          <p>Initializing...</p>
         </div>
         <div style={{ padding: '20px', textAlign: 'center' }}>
           <p>Loading Office.js integration...</p>
