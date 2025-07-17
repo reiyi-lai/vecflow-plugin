@@ -1,195 +1,61 @@
-# Oliver AI Legal Assistant - Word Add-in
+# Oliver - Word Plug-in
 
-A Microsoft Word add-in that embeds Oliver's AI-powered legal workflow features directly into Word, enabling lawyers to summarize, compare, redraft, and analyze legal documents seamlessly.
+A Microsoft Word add-in that integrates Oliver's core features into Word.
 
 ## Features
 
-- **📝 Summarize**: AI-powered text summarization of selected content
-- **⚖️ Compare**: Side-by-side clause comparison with detailed analysis
-- **✍️ Redraft**: AI-assisted text redrafting with inline suggestions
-- **💬 Assistant**: Chat-style AI assistant for custom legal queries
+- **Summarize** - Get quick summaries of selected text
+- **Compare** - Analyze differences between clauses  
+- **Redraft** - Replace selected text with AI-powered rewritten draft
+- **Chat** - Ask questions about your document
 
-## Architecture
+## Quick Start
 
-```
-┌─────────────────────────────────┐
-│ Microsoft Word                  │
-│ ┌─────────────────────────────┐ │
-│ │ Task Pane (React App)       │ │
-│ │ - Summarize                 │ │
-│ │ - Compare                   │ │
-│ │ - Redraft                   │ │
-│ │ - Chat Assistant            │ │
-│ └─────────────────────────────┘ │
-│         │ Office.js API         │
-└─────────────────────────────────┘
-          │ HTTPS API calls
-          ▼
-┌─────────────────────────────────┐
-│ FastAPI Backend                 │
-│ - /api/summarize               │
-│ - /api/compare                 │
-│ - /api/redraft                 │
-│ - /api/analyze                 │
-└─────────────────────────────────┘
-```
-
-## Setup Instructions
-
-### Prerequisites
-- Node.js 18+ 
-- npm or yarn
-- Microsoft Word (Desktop or Online)
-
-### 1. Install Dependencies
+### Setup
 ```bash
 cd frontend
 npm install
-```
-
-### 2. Start Development Server
-```bash
 npm run dev
 ```
-This will start the server at `https://localhost:3000`
 
-> **Note**: The server uses HTTPS as required by Office.js add-ins
+Open the dev server at `https://localhost:3000` (HTTPS required for Office add-ins).
 
-### 3. Load Add-in in Word
-
-#### Option A: Word Online (Recommended for Development)
+### Load into Word
+**Word Online (easiest):**
 1. Open Word Online
-2. Go to **Insert** > **Add-ins** > **Upload My Add-in**
-3. Upload the `manifest.xml` file from the root directory
-4. The add-in will appear in the task pane
+2. Add-ins > My Add-ins > Upload My Add-in
+3. Upload the `manifest.xml` file
 
-#### Option B: Word Desktop
-1. Open Word Desktop
-2. Go to **File** > **Options** > **Trust Center** > **Trust Center Settings** > **Trusted Add-in Catalogs**
-3. Add the directory containing `manifest.xml`
-4. Restart Word
-5. Go to **Insert** > **My Add-ins** > **Shared Folder** > **Oliver AI Assistant**
+**Word Desktop:**
+1. File > Options > Trust Center > Trusted Add-in Catalogs
+2. Add this project's directory
+3. Restart Word, then Insert > My Add-ins > Oliver AI Assistant
 
-### 4. Backend Setup (Required for Full Functionality)
+### Backend
+The frontend expects a FastAPI backend at `http://localhost:8000` with endpoints:
+- `POST /api/summarize`
+- `POST /api/compare` 
+- `POST /api/redraft`
+- `POST /api/analyze`
 
-The frontend expects a FastAPI backend running on `http://localhost:8000` with these endpoints:
+Change the URL in `src/services/apiService.ts` if needed.
 
-```python
-# Expected API endpoints
-POST /api/summarize
-POST /api/compare  
-POST /api/redraft
-POST /api/analyze
-```
+## Tech stack
 
-Update the `API_BASE_URL` in `src/services/apiService.ts` if your backend runs on a different port.
-
-## Project Structure
-
-```
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Sidebar.tsx          # Main container
-│   │   │   ├── SummarizeButton.tsx  # Summarization feature
-│   │   │   ├── ComparePanel.tsx     # Clause comparison
-│   │   │   ├── RedraftPanel.tsx     # Text redrafting
-│   │   │   └── AssistantChat.tsx    # AI chat interface
-│   │   ├── office/
-│   │   │   └── wordApi.ts           # Office.js wrapper
-│   │   ├── services/
-│   │   │   └── apiService.ts        # API service layer
-│   │   ├── App.tsx                  # Main app component
-│   │   └── App.css                  # Styling
-│   ├── package.json
-│   └── vite.config.ts
-├── manifest.xml                     # Office add-in manifest
-└── README.md
-```
-
-## Usage
-
-### Summarize
-1. Select text in your Word document
-2. Click **Summarize** tab
-3. Click **Summarize Selected Text**
-4. Review the AI-generated summary
-5. Click **Insert into Document** to add it to your document
-
-### Compare
-1. Click **Compare** tab
-2. Click **Select First Clause** and highlight the first clause
-3. Click **Select Second Clause** and highlight the second clause
-4. Click **Compare Clauses**
-5. Review the detailed comparison analysis
-6. Click **Insert into Document** to add the comparison
-
-### Redraft
-1. Click **Redraft** tab
-2. Click **Select Text to Redraft** and highlight the text
-3. Optionally add specific instructions
-4. Click **Generate Redraft**
-5. Review the AI suggestion side-by-side with original
-6. Click **Accept & Replace** or **Reject**
-
-### Assistant
-1. Click **Assistant** tab
-2. Configure options:
-   - **Include selected text**: Include highlighted text in context
-   - **Include entire document**: Include full document for context
-3. Type your question or request
-4. Review the AI response
-5. Click **Insert into Document** to add the response
-
-## Development
-
-### Available Scripts
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run lint` - Run ESLint
-- `npm run preview` - Preview production build
-
-### Key Technologies
-- **React 19** with TypeScript
-- **Vite** for fast development
-- **Office.js** for Word integration
-- **CSS3** for styling (no external UI library)
+- **Frontend & styling**: React 19 + TypeScript
+- **Build tool**: Vite
+- **Word integration**: Office.js
+- **Additional styling**: Plain CSS (no UI framework)
 
 ## Deployment
 
-### Building for Production
 ```bash
 npm run build
 ```
 
-### Hosting Requirements
-- HTTPS hosting (required for Office add-ins)
-- Update manifest.xml URLs to point to your production domain
-- Ensure CORS is configured for your backend
+Host the built files on HTTPS and update manifest.xml URLs to custom domain if required.
 
 ## Troubleshooting
 
-### Common Issues
-
-**"Office.js not loaded" error**
-- Ensure you're testing in Microsoft Word, not a regular browser
-- Check that the manifest.xml is properly loaded
-
-**API connection errors**
-- Verify your backend is running on the correct port
-- Check CORS settings on your backend
-- Update API_BASE_URL in apiService.ts if needed
-
-**HTTPS certificate warnings**
-- For development, you may need to accept the self-signed certificate
-- Visit https://localhost:3000 directly and accept the certificate
-
-### Debug Mode
-Open browser dev tools in Word Online to debug the add-in:
-1. Right-click in the task pane
-2. Select **Inspect** or **Inspect Element**
-3. Use the console to debug JavaScript errors
-
-## License
-
-This project is part of Vecflow's Oliver AI Legal Assistant platform.
+- **"Office.js not loaded"** - Make sure that you are in Word, not a browser
+- **HTTPS warnings** - Accept the self-signed cert by visiting https://localhost:3000

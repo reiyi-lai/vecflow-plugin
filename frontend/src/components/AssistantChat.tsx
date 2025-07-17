@@ -84,97 +84,41 @@ const AssistantChat: React.FC = () => {
 
   return (
     <div className="assistant-chat" style={{ padding: '20px' }}>
-      <div className="panel-header" style={{ marginBottom: '20px' }}>
+      <div className="panel-header">
         <h3>AI Assistant</h3>
         <p>Chat with Oliver about your document.</p>
       </div>
 
-      <div className="chat-options" style={{ 
-        marginBottom: '16px',
-        padding: '12px',
-        backgroundColor: '#f8f9fa',
-        borderRadius: '6px',
-        border: '1px solid #e9ecef'
-      }}>
-        <label className="option-label" style={{ 
-          display: 'flex',
-          alignItems: 'center',
-          fontSize: '14px',
-          cursor: 'pointer'
-        }}>
+      <div className="chat-options">
+        <label className="option-label">
           <input
             type="checkbox"
             checked={includeDocument}
             onChange={(e) => setIncludeDocument(e.target.checked)}
-            style={{ marginRight: '8px' }}
           />
           Include entire document
         </label>
       </div>
 
-      <div className="chat-messages" style={{ 
-        maxHeight: '200px',
-        overflowY: 'auto',
-        border: '1px solid #e9ecef',
-        borderRadius: '8px',
-        padding: '16px',
-        marginBottom: '16px',
-        backgroundColor: 'white'
-      }}>
+      <div className="chat-messages">
         {messages.length === 0 ? (
-          <div className="empty-state" style={{ textAlign: 'center', padding: '40px 20px', color: '#6c757d' }}>
-            <div className="suggested-prompts" style={{ marginTop: '20px' }}>
+          <div className="empty-state">
+            <div className="suggested-prompts">
               <button 
                 onClick={() => setCurrentPrompt('Analyze the selected text for potential legal issues')}
                 className="prompt-suggestion"
-                style={{ 
-                  display: 'block',
-                  width: '100%',
-                  marginBottom: '8px',
-                  padding: '12px',
-                  backgroundColor: '#f8f9fa',
-                  border: '1px solid #e9ecef',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                  color: '#495057',
-                  cursor: 'pointer'
-                }}
               >
                 Analyze for legal issues
               </button>
               <button 
                 onClick={() => setCurrentPrompt('Summarize the key points of this document')}
                 className="prompt-suggestion"
-                style={{ 
-                  display: 'block',
-                  width: '100%',
-                  marginBottom: '8px',
-                  padding: '12px',
-                  backgroundColor: '#f8f9fa',
-                  border: '1px solid #e9ecef',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                  color: '#495057',
-                  cursor: 'pointer'
-                }}
               >
                 Summarize key points
               </button>
               <button 
                 onClick={() => setCurrentPrompt('What are the main obligations in this contract?')}
                 className="prompt-suggestion"
-                style={{ 
-                  display: 'block',
-                  width: '100%',
-                  marginBottom: '8px',
-                  padding: '12px',
-                  backgroundColor: '#f8f9fa',
-                  border: '1px solid #e9ecef',
-                  borderRadius: '6px',
-                  fontSize: '13px',
-                  color: '#495057',
-                  cursor: 'pointer'
-                }}
               >
                 Find main obligations
               </button>
@@ -190,25 +134,15 @@ const AssistantChat: React.FC = () => {
               marginLeft: message.role === 'user' ? '5%' : '0',
               marginRight: message.role === 'assistant' ? '5%' : '0'
             }}>
-              <div className="message-header" style={{ 
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: '8px'
-              }}>
-                <span className="message-role" style={{ fontWeight: '600', fontSize: '12px', color: '#495057' }}>
+              <div className="message-header">
+                <span className="message-role">
                   {message.role === 'user' ? 'You' : 'Oliver'}
                 </span>
-                <span className="message-time" style={{ fontSize: '11px', color: '#6c757d' }}>
+                <span className="message-time">
                   {formatTime(message.timestamp)}
                 </span>
               </div>
-              <div className="message-content" style={{ 
-                fontSize: '14px',
-                lineHeight: '1.4',
-                color: '#212529',
-                whiteSpace: 'pre-wrap'
-              }}>
+              <div className="message-content">
                 {message.content}
               </div>
             </div>
@@ -231,7 +165,7 @@ const AssistantChat: React.FC = () => {
               <span className="message-role" style={{ fontWeight: '600', fontSize: '12px', color: '#495057' }}>Oliver</span>
             </div>
             <div className="message-content">
-              <div className="typing-indicator" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <div className="typing-indicator">
                 <span style={{ 
                   height: '8px',
                   width: '8px',
@@ -264,7 +198,7 @@ const AssistantChat: React.FC = () => {
         )}
       </div>
 
-      <div className="chat-input" style={{ borderTop: '1px solid #e9ecef', paddingTop: '16px' }}>
+      <div className="chat-input">
         <textarea
           value={currentPrompt}
           onChange={(e) => setCurrentPrompt(e.target.value)}
@@ -273,31 +207,12 @@ const AssistantChat: React.FC = () => {
           className="prompt-input"
           rows={3}
           disabled={loading}
-          style={{ 
-            width: '100%',
-            padding: '12px',
-            border: '1px solid #ced4da',
-            borderRadius: '6px',
-            fontSize: '14px',
-            fontFamily: 'inherit',
-            resize: 'vertical',
-            minHeight: '60px',
-            marginBottom: '12px',
-            backgroundColor: 'white',
-            color: 'black',
-            boxSizing: 'border-box'
-          }}
         />
-        <div className="input-actions" style={{ 
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
+        <div className="input-actions">
           <button 
             onClick={handleClearChat}
             className="action-button tertiary small"
             disabled={loading || messages.length === 0}
-            style={{ padding: '6px 12px', fontSize: '12px' }}
           >
             Clear Chat
           </button>

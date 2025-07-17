@@ -47,7 +47,7 @@ export interface ChatMessage {
 }
 
 class ApiService {
-  private async makeRequest<T>(endpoint: string, data: any): Promise<T> {
+  private async makeRequest<T>(endpoint: string, data: unknown): Promise<T> {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'POST',
       headers: {
