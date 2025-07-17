@@ -11,7 +11,6 @@ const AssistantChat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentPrompt, setCurrentPrompt] = useState<string>('');
   const [loading, setLoading] = useState(false);
-  const [includeSelection, setIncludeSelection] = useState(true);
   const [includeDocument, setIncludeDocument] = useState(false);
 
   const handleSendMessage = async () => {
@@ -28,14 +27,10 @@ const AssistantChat: React.FC = () => {
     setLoading(true);
 
     try {
-      let selectedText = '';
-
-      if (includeSelection) {
-        try {
-          selectedText = await wordApi.getSelectedText();
-        } catch (error) {
-          console.warn('Could not get selected text:', error);
-        }
+      try {
+        await wordApi.getSelectedText();
+      } catch (error) {
+        console.warn('Could not get selected text:', error);
       }
 
       if (includeDocument) {
@@ -49,7 +44,7 @@ const AssistantChat: React.FC = () => {
       // Mock API call - replace with actual API call later
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      let  mockResponse = `Lorem ipsum dolor sit amet.`;
+      const mockResponse = `Lorem ipsum dolor sit amet.`;
 
       const assistantMessage: ChatMessage = {
         role: 'assistant',
@@ -78,16 +73,6 @@ const AssistantChat: React.FC = () => {
       handleSendMessage();
     }
   };
-
-  // const handleInsertResponse = async (content: string) => {
-  //   try {
-  //     await wordApi.insertTextAtSelection(`\n\n${content}`);
-  //     alert('Response inserted successfully!');
-  //   } catch (error) {
-  //     console.error('Failed to insert response:', error);
-  //     alert('Failed to insert response');
-  //   }
-  // };
 
   const handleClearChat = () => {
     setMessages([]);
@@ -138,7 +123,6 @@ const AssistantChat: React.FC = () => {
       }}>
         {messages.length === 0 ? (
           <div className="empty-state" style={{ textAlign: 'center', padding: '40px 20px', color: '#6c757d' }}>
-            {/* <p>Start a conversation with Oliver!</p> */}
             <div className="suggested-prompts" style={{ marginTop: '20px' }}>
               <button 
                 onClick={() => setCurrentPrompt('Analyze the selected text for potential legal issues')}
@@ -227,17 +211,6 @@ const AssistantChat: React.FC = () => {
               }}>
                 {message.content}
               </div>
-              {/* {message.role === 'assistant' && (
-                <div className="message-actions" style={{ marginTop: '8px' }}>
-                  <button 
-                    onClick={() => handleInsertResponse(message.content)}
-                    className="action-button small"
-                    style={{ padding: '6px 12px', fontSize: '12px' }}
-                  >
-                    Insert into Document
-                  </button>
-                </div>
-              )} */}
             </div>
           ))
         )}

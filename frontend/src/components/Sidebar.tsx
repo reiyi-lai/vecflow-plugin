@@ -9,19 +9,16 @@ type ActivePanel = 'summarize' | 'compare' | 'redraft' | 'chat';
 
 const Sidebar: React.FC = () => {
   const [activePanel, setActivePanel] = useState<ActivePanel>('summarize');
-  const [isInitialized, setIsInitialized] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const initializeOffice = async () => {
       try {
         await wordApi.initialize();
-        setIsInitialized(true);
         console.log('Office.js initialized successfully');
       } catch (error) {
         console.error('Failed to initialize Office.js:', error);
-        // For development, we'll continue even if Office.js fails
-        setIsInitialized(true);
+        // For development, continue even if Office.js fails
       } finally {
         setLoading(false);
       }
@@ -49,7 +46,6 @@ const Sidebar: React.FC = () => {
       <div className="sidebar-header" style={{ backgroundColor: 'white', color: 'black' }}>
         <h2 style={{ color: 'black' }}>Oliver AI Assistant</h2>
         <p style={{ color: 'black' }}>Your AI-powered legal workflow assistant</p>
-        {isInitialized}
       </div>
 
       <div className="sidebar-nav">

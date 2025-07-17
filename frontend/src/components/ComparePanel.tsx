@@ -66,19 +66,6 @@ const ComparePanel: React.FC = () => {
     }
   };
 
-  const handleInsertComparison = async () => {
-    if (!result) return;
-    
-    try {
-      const comparisonText = `\n\nClause Comparison:\n${result.comparison}\n\nKey Differences:\n${result.differences.map((diff: string) => `• ${diff}`).join('\n')}\n\nRecommendations:\n${result.recommendations.map((rec: string) => `• ${rec}`).join('\n')}`;
-      await wordApi.insertTextAtSelection(comparisonText);
-      handleReset();
-      alert('Comparison inserted successfully!');
-    } catch (error) {
-      console.error('Failed to insert comparison:', error);
-      alert('Failed to insert comparison');
-    }
-  };
 
   const handleReset = () => {
     setClause1('');
@@ -227,34 +214,8 @@ const ComparePanel: React.FC = () => {
           <h4 style={{ margin: '0 0 12px 0', fontSize: '14px', fontWeight: '600' }}>Comparison Result:</h4>
           <div className="result-text">
             <p>Lorem ipsum dolor sit amet</p>
-            {/* <div className="comparison-section" style={{ marginBottom: '16px' }}>
-              <h5 style={{ margin: '0 0 8px 0', fontSize: '13px', fontWeight: '600' }}>Analysis:</h5>
-              <p style={{ fontSize: '13px', lineHeight: '1.4' }}>{result.comparison}</p>
-            </div>
-            <div className="comparison-section" style={{ marginBottom: '16px' }}>
-              <h5 style={{ margin: '0 0 8px 0', fontSize: '13px', fontWeight: '600' }}>Key Differences:</h5>
-              <ul style={{ margin: '0', paddingLeft: '20px' }}>
-                {result.differences.map((diff: string, index: number) => (
-                  <li key={index} style={{ marginBottom: '4px', fontSize: '13px', lineHeight: '1.4' }}>{diff}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="comparison-section">
-              <h5 style={{ margin: '0 0 8px 0', fontSize: '13px', fontWeight: '600' }}>Recommendations:</h5>
-              <ul style={{ margin: '0', paddingLeft: '20px' }}>
-                {result.recommendations.map((rec: string, index: number) => (
-                  <li key={index} style={{ marginBottom: '4px', fontSize: '13px', lineHeight: '1.4' }}>{rec}</li>
-                ))}
-              </ul>
-            </div> */}
           </div>
           <div className="result-actions" style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
-            {/* <button 
-              onClick={handleInsertComparison}
-              className="action-button secondary"
-            >
-              Insert into Document
-            </button> */}
             <button 
               onClick={handleReset}
               className="action-button tertiary"

@@ -63,13 +63,6 @@ const SummarizeButton: React.FC = () => {
             whiteSpace: 'pre-wrap'
           }}>{result}</div>
           <div className="result-actions">
-            {/* <button 
-              onClick={handleInsertSummary}
-              className="action-button secondary"
-              style={{ marginRight: '8px' }}
-            >
-              Insert into Document
-            </button> */}
             <button 
               onClick={() => setResult('')}
               className="action-button tertiary"

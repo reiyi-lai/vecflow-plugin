@@ -285,6 +285,11 @@
   box-shadow: 0 0 0 2px rgba(43, 92, 230, 0.2);
 }
 
+.instructions-input::selection {
+  color: white;
+  background-color: #2b5ce6;
+}
+
 .suggestion-container {
   margin-top: 20px;
   padding: 16px;
@@ -501,6 +506,11 @@
   outline: none;
   border-color: #2b5ce6;
   box-shadow: 0 0 0 2px rgba(43, 92, 230, 0.2);
+}
+
+.prompt-input::selection {
+  color: white;
+  background-color: #2b5ce6;
 }
 
 .input-actions {

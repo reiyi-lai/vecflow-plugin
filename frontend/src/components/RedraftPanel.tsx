@@ -10,25 +10,16 @@ const RedraftPanel: React.FC = () => {
 
   const handleSelectText = async () => {
     try {
-      // Store the selected range for later replacement
-      await new Promise((resolve) => {
-        Word.run(async (context) => {
-          const selection = context.document.getSelection();
-          selection.load('text');
-          await context.sync();
-          
-          if (!selection.text || selection.text.trim() === '') {
-            alert('Please select some text to redraft.');
-            return;
-          }
-          
-          // Store both the text and the range
-          setOriginalText(selection.text);
-          setResult(null);
-          setShowSuggestion(false);
-          resolve(true);
-        });
-      });
+      const selectedText = await wordApi.getSelectedText();
+      
+      if (!selectedText || selectedText.trim() === '') {
+        alert('Please select some text to redraft.');
+        return;
+      }
+      
+      setOriginalText(selectedText);
+      setResult(null);
+      setShowSuggestion(false);
     } catch (error) {
       console.error('Failed to get selected text:', error);
       alert('Failed to get selected text. Please try again.');
@@ -46,13 +37,7 @@ const RedraftPanel: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 3000));
       
       const mockResult = {
-        redraftedText: `[Placeholder text for replacement]`,
-        changes: [
-          'This is a mock redraft for testing purposes',
-          'The selected text will be replaced with the placeholder',
-          'In production, this would be AI-generated content',
-          instructions ? `Applied specific instruction: "${instructions}"` : 'General style improvements applied'
-        ].filter(Boolean)
+        redraftedText: `<Placeholder text for replacement>`
       };
       
       setResult(mockResult);
@@ -70,32 +55,7 @@ const RedraftPanel: React.FC = () => {
     if (!result || !originalText) return;
     
     try {
-      // Use Word.run to replace the text more reliably
-      await new Promise((resolve, reject) => {
-        Word.run(async (context) => {
-          try {
-            // Find and replace the original text with the redrafted text
-            const searchResults = context.document.body.search(originalText, { matchCase: false, matchWholeWord: false });
-            searchResults.load('items');
-            await context.sync();
-            
-            if (searchResults.items.length > 0) {
-              // Replace the first occurrence (should be our selected text)
-              searchResults.items[0].insertText(result.redraftedText, Word.InsertLocation.replace);
-              await context.sync();
-              resolve(true);
-            } else {
-              // Fallback: just insert at current selection
-              const selection = context.document.getSelection();
-              selection.insertText(result.redraftedText, Word.InsertLocation.replace);
-              await context.sync();
-              resolve(true);
-            }
-          } catch (error) {
-            reject(error);
-          }
-        });
-      });
+      await wordApi.replaceSelectedText(result.redraftedText);
       
       setOriginalText('');
       setResult(null);
@@ -303,17 +263,6 @@ const RedraftPanel: React.FC = () => {
               }}>{result.redraftedText}</div>
             </div>
           </div>
-
-          {/* {result.changes && result.changes.length > 0 && (
-            <div className="changes-section" style={{ marginBottom: '16px' }}>
-              <h5 style={{ margin: '0 0 8px 0', fontSize: '13px', fontWeight: '600' }}>Key Changes:</h5>
-              <ul style={{ margin: '0', paddingLeft: '20px' }}>
-                {result.changes.map((change: string, index: number) => (
-                  <li key={index} style={{ marginBottom: '4px', fontSize: '13px', lineHeight: '1.4' }}>{change}</li>
-                ))}
-              </ul>
-            </div>
-          )} */}
 
           <div className="suggestion-actions" style={{ display: 'flex', gap: '8px' }}>
             <button 
