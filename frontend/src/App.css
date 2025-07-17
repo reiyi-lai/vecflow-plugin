@@ -277,6 +277,9 @@
   font-family: inherit;
   resize: vertical;
   min-height: 60px;
+  background-color: white;
+  color: #212529;
+  box-sizing: border-box;
 }
 
 .instructions-input:focus {
@@ -298,6 +301,22 @@
   border: 1px solid #ffeaa7;
 }
 
+.suggestion-actions {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.suggestion-actions .action-button {
+  flex: 0 1 32%;
+  white-space: normal;
+  min-width: 0;
+  font-size: 12px;
+  padding: 8px 4px;
+  line-height: 1.2;
+  text-align: center;
+}
+
 .suggestion-comparison {
   margin-bottom: 16px;
 }
@@ -314,11 +333,13 @@
 .text-block.original {
   background-color: #f8d7da;
   border: 1px solid #f5c6cb;
+  color: black;
 }
 
 .text-block.redrafted {
   background-color: #d4edda;
   border: 1px solid #c3e6cb;
+  color: black;
 }
 
 .changes-section {
@@ -500,6 +521,9 @@
   resize: vertical;
   min-height: 60px;
   margin-bottom: 12px;
+  background-color: white;
+  color: #212529;
+  box-sizing: border-box;
 }
 
 .prompt-input:focus {

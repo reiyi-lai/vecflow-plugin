@@ -126,14 +126,7 @@ const AssistantChat: React.FC = () => {
           </div>
         ) : (
           messages.map((message, index) => (
-            <div key={index} className={`message ${message.role}`} style={{ 
-              marginBottom: '16px',
-              padding: '12px',
-              borderRadius: '8px',
-              backgroundColor: message.role === 'user' ? '#e3f2fd' : '#f3e5f5',
-              marginLeft: message.role === 'user' ? '5%' : '0',
-              marginRight: message.role === 'assistant' ? '5%' : '0'
-            }}>
+            <div key={index} className={`message ${message.role}`}>
               <div className="message-header">
                 <span className="message-role">
                   {message.role === 'user' ? 'You' : 'Oliver'}
@@ -149,49 +142,12 @@ const AssistantChat: React.FC = () => {
           ))
         )}
         {loading && (
-          <div className="message assistant" style={{ 
-            marginBottom: '16px',
-            padding: '12px',
-            borderRadius: '8px',
-            backgroundColor: '#f3e5f5',
-            marginRight: '5%'
-          }}>
-            <div className="message-header" style={{ 
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '8px'
-            }}>
-              <span className="message-role" style={{ fontWeight: '600', fontSize: '12px', color: '#495057' }}>Oliver</span>
+          <div className="message assistant">
+            <div className="message-header">
+              <span className="message-role">Oliver</span>
             </div>
             <div className="message-content">
               <div className="typing-indicator">
-                <span style={{ 
-                  height: '8px',
-                  width: '8px',
-                  backgroundColor: '#6c757d',
-                  borderRadius: '50%',
-                  display: 'inline-block',
-                  animation: 'typing 1.4s infinite ease-in-out',
-                  animationDelay: '-0.32s'
-                }}></span>
-                <span style={{ 
-                  height: '8px',
-                  width: '8px',
-                  backgroundColor: '#6c757d',
-                  borderRadius: '50%',
-                  display: 'inline-block',
-                  animation: 'typing 1.4s infinite ease-in-out',
-                  animationDelay: '-0.16s'
-                }}></span>
-                <span style={{ 
-                  height: '8px',
-                  width: '8px',
-                  backgroundColor: '#6c757d',
-                  borderRadius: '50%',
-                  display: 'inline-block',
-                  animation: 'typing 1.4s infinite ease-in-out'
-                }}></span>
               </div>
             </div>
           </div>

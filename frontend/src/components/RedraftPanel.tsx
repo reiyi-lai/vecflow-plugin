@@ -116,7 +116,7 @@ const RedraftPanel: React.FC = () => {
           <textarea
             value={instructions}
             onChange={(e) => setInstructions(e.target.value)}
-            placeholder="Enter specific instructions (e.g., 'make it more formal', 'simplify language', 'add more detail')"
+            placeholder="Add specific instructions, e.g. 'make it more formal', 'simplify language', 'add more detail'"
             className="instructions-input"
             rows={3}
             disabled={loading}
@@ -154,7 +154,7 @@ const RedraftPanel: React.FC = () => {
             </div>
           </div>
 
-          <div className="suggestion-actions" style={{ display: 'flex', gap: '8px' }}>
+          <div className="suggestion-actions">
             <button 
               onClick={handleAcceptSuggestion}
               className="action-button primary"
